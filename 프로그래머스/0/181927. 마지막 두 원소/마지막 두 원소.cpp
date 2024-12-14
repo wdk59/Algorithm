@@ -7,8 +7,7 @@ vector<int> solution(vector<int> num_list) {
     vector<int> answer;
     
     answer = num_list;
-    int a = num_list[num_list.size() - 1] > num_list[num_list.size() - 2] ? num_list[num_list.size() - 1] - num_list[num_list.size() - 2] : num_list[answer.size() - 1] * 2;
-    answer.push_back(a);
+    answer.push_back(*(num_list.end() - 1) > *(num_list.end() - 2) ? *(num_list.end() - 1) - *(num_list.end() - 2) : *(num_list.end() - 1) * 2);
     
     return answer;
 }
