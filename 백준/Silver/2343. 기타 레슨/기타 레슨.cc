@@ -1,59 +1,45 @@
-
 #include <iostream>
-#include <algorithm>
 #include <vector>
-#include <string>
+#include <numeric>	// accumulate
+#include <algorithm>	// max_element
+using namespace std;
 
-int main()
-{
-	std::ios::sync_with_stdio(false);
-	std::cin.tie(nullptr);
+int main() {
+	int N = 0, M = 0, result = 0;
+	vector<int> lec;
 
-	int N, M;
-	std::cin >> N >> M;
-
-	std::vector<int> lectures(N);
-	int max = 0;
-	int min = 0;
-
+	cin >> N >> M;
 	for (int i = 0; i < N; i++) {
-		std::cin >> lectures[i];
-		min = std::max(min, lectures[i]);
-		max += lectures[i];
+		int tmp = 0;
+		cin >> tmp;
+		lec.push_back(tmp);
 	}
 
-	int result = 0;
-
-	while (min <= max)
-	{
-		int mid = (min + max) / 2;
-		int sum = 0;
-		int cnt = 1;
-
-		for (int i = 0;i < N; i++) {
-			if (lectures[i] + sum > mid)
-			{
+	int left = *max_element(lec.begin(), lec.end()), right = accumulate(lec.begin(), lec.end(), 0);
+	while (left <= right) {
+		int mid = (left + right) / 2;
+		int time = 0;	// 한 블루레이에 들어가는 강의 총 시간
+		int cnt = 1;	// 사용되는 블루레이 수
+		for (int i : lec) {
+			if (time + i > mid) {
 				cnt++;
-				sum = lectures[i];
+				time = i;
 			}
-			else
-			{
-				sum += lectures[i];
+			else {
+				time += i;
 			}
 		}
 
-		if (cnt <= M)
-		{
+		if (cnt > M) {
+			left = mid + 1;
+		}
+		else {
 			result = mid;
-			max = mid - 1;
-		} 
-		else
-		{
-			min = mid + 1;
+			right = mid - 1;
 		}
 	}
 
-	std::cout << result;
+	cout << result;
 
 	return 0;
 }
