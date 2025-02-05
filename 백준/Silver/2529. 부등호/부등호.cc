@@ -8,6 +8,8 @@ char sign[9] = "";
 string minResult = "";
 string maxResult = "";
 
+bool visited[10] = { false, };
+
 bool check(char op, int front, int back) {
 	if (op == '<')
 		return front < back;
@@ -29,17 +31,20 @@ void DFS_find(int depth, string selectedNum) {
 		return;
 	}
 
+	/* 결과값에 들어갈 숫자 선택하기 */
 	for (int i = 0; i <= 9; i++) {
 		// 이미 선택된 문자인 경우에는 뛰어넘기
-		if (selectedNum.find(i + '0') != string::npos) {
+		//if (selectedNum.find(i + '0') != string::npos)
+		if (visited[i])
 			continue;
-		}
 
-		/* 결과값에 들어갈 숫자 선택하기 */
 		// 선택된 숫자가 없는 경우, 현재 숫자(i) 선택하기
 		// 선택된 숫자가 있는 경우(OR), 부등호를 만족하면 다음 부등호 검사
 		if (depth == 0 || check(sign[depth - 1], selectedNum[depth - 1] - '0', i)) {
+			visited[i] = true;
 			DFS_find(depth + 1, selectedNum + to_string(i));
+			visited[i] = false;
+
 		}
 	}
 
