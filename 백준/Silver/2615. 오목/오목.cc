@@ -3,123 +3,64 @@ using namespace std;
 
 int board[19][19];
 
-bool right(int x, int y) {
-	bool result = false;
+int search(int x, int y, int dx, int dy, int* minX, int* minY, int cnt) {
+	// 바둑알을 5개 이상 찾았을 때는 더 탐색하는 의미가 없음
+	if (cnt > 5) {
+		return 20;
+	}
 
-	if (x < 19) {
-		if (y <= 14) {
-			int cnt = 1;
+	// 가려는 바둑알 위치 설정
+	int nx = x + dx;
+	int ny = y + dy;
 
-			// 5연속 확인
-			for (int i = 1; i < 5; i++) {
-				if (board[x][y] == board[x][y + i])
-					cnt++;
-			}
-			
-			if (cnt == 5)
-				result = true;
+	// 가려는 바둑알이 판을 벗어나면 탐색 중지
+	if (nx < 0 || nx > 18 || ny < 0 || ny > 18)
+		return cnt;
 
-			/* 6번째 확인 */
-			// 5연속인 상태에서 -1번째 또는 6번째도 같은 색이면 실패
-			if (result) {
-				if (y > 0 && board[x][y] == board[x][y - 1]) {
-					result = false;
-				}
-				if (y <= 13 && board[x][y] == board[x][y + 5])
-					result = false;
-			}
-		}
+	// 바둑알 색 비교
+	if (board[x][y] == board[nx][ny]) {
 		
-	}
-
-	return result;
-}
-
-bool down(int x, int y) {
-	bool result = false;
-	
-	if (y < 19) {
-		if (x <= 14) {
-			int cnt = 1;
-
-			// 5연속 확인
-			for (int i = 1; i < 5; i++) {
-				if (board[x][y] == board[x + i][y])
-					cnt++;
-			}
-
-			if (cnt == 5)
-				result = true;
-
-			/* 6번째 확인 */
-			// 5연속인 상태에서 -1번째 또는 6번째도 같은 색이면 실패
-			if (result) {
-				if (x > 0 && board[x][y] == board[x - 1][y])
-					result = false;
-				if (x <= 13 && board[x][y] == board[x + 5][y])
-					result = false;
-			}
+		/* 현재 방향에서 조건에 맞는 가장 왼쪽 위 바둑알 좌표 저장 */
+		// 항상 위에서부터 탐색하기 때문에 현재보다 위에서 오목인 경우는 없음
+		if (ny < *minY) {
+			*minX = nx;
+			*minY = ny;
 		}
+
+		cnt = search(nx, ny, dx, dy, minX, minY, cnt + 1);
 	}
 
-	return result;
+	return cnt;
 }
 
-bool rightDown(int x, int y) {
-	bool result = false;
+bool solution(int x, int y, int* ansX, int* ansY) {
+	// 방향: 가로, 세로, 우하향, 우상향
+	int dx[4] = {0, 1, 1, -1};
+	int dy[4] = { 1, 0, 1, 1 };
 
-	if (x <= 14 && y <= 14) {
+	// 각 방향별로 연속으로 색이 같은 바둑알 수 세기
+	for (int i = 0; i < 4; i++) {
 		int cnt = 1;
+		int minX = x, minY = y;
 
-		// 5연속 확인
-		for (int i = 1; i < 5; i++) {
-			if (board[x][y] == board[x + i][y + i])
-				cnt++;
-		}
+		//양방향으로 연산
+		
+		cnt += search(x, y, dx[i], dy[i], &minX, &minY, 0) + search(x, y, -dx[i], -dy[i], &minX, &minY, 0);
 
-		if (cnt == 5)
-			result = true;
+		if (cnt == 5) {
+			*ansX = minX;
+			*ansY = minY;
 
-		/* 6번째 확인 */
-		// 5연속인 상태에서 -1번째 또는 6번째도 같은 색이면 실패
-		if (result) {
-			if (x > 0 && y > 0 && board[x][y] == board[x - 1][y - 1])
-				result = false;
-			if (x <= 13 && y <= 13 && board[x][y] == board[x + 5][y + 5])
-				result = false;
+			return true;
 		}
 	}
 
-	return result;
+	return false;
 }
 
-bool rightUp(int x, int y) {
-	bool result = false;
 
-	if (x >= 4 && x < 19 && y <= 14) {
-		int cnt = 1;
 
-		// 5연속 확인
-		for (int i = 1; i < 5; i++) {
-			if (board[x][y] == board[x - i][y + i])
-				cnt++;
-		}
 
-		if (cnt == 5)
-			result = true;
-
-		/* 6번째 확인 */
-		// 5연속인 상태에서 -1번째 또는 6번째도 같은 색이면 실패
-		if (result) {
-			if (x < 18 && y > 0 && board[x][y] == board[x + 1][y - 1])
-				result = false;
-			if (x >= 5 && y <= 13 && board[x][y] == board[x - 5][y + 5])
-				result = false;
-		}
-	}
-
-	return result;
-}
 
 int main() {
 	for (int i = 0; i < 19; i++) {
@@ -128,15 +69,18 @@ int main() {
 		}
 	}
 
+	int ansX = -2, ansY = -2;
 	bool stop = false;
 	for (int i = 0; i < 19; i++) {
 		for (int j = 0; j < 19; j++) {
+
 			/* 바둑알 발견 시 승리 조건 확인 */
 			if (board[i][j] != 0) {
+
 				/* 승리자 발견 시 결과 출력 */
-				if (right(i, j) || down(i, j) || rightDown(i, j) || rightUp(i, j)) {
+				if (solution(i, j, &ansX, &ansY)) {
 					cout << board[i][j] << "\n";
-					cout << i + 1 << " " << j + 1;
+					cout << ansX + 1 << " " << ansY + 1;
 					stop = true;
 					break;
 				}
