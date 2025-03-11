@@ -8,11 +8,11 @@ int main() {
 
 	int i = 2;
 	while (N > 1) {
-		while (N % i == 0) {
+		if (N % i == 0) {
 			cout << i << '\n';
 			N /= i;
 		}
-		i++;
+		else { i++; }
 	}
 
 	return 0;
