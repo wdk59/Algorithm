@@ -15,12 +15,11 @@ int main() {
 
 	for (int i = 0; i < 3; i++) {
 		if (count(x.begin(), x.end(), x[i]) == 1)
-			cout << x[i] << ' ';
-	}
-	for (int i = 0; i < 3; i++) {
+			tmpX = x[i];
 		if (count(y.begin(), y.end(), y[i]) == 1)
-			cout << y[i];
+			tmpY = y[i];
 	}
+	cout << tmpX << ' ' << tmpY;
 
 	return 0;
 }
