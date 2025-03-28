@@ -3,6 +3,10 @@
 using namespace std;
 
 int main() {
+    std::ios_base::sync_with_stdio(false);
+    cin.tie(0);
+    cout.tie(0);
+
     int N = 0, tmp = 0;
     int num[10001] = { 0, };
     cin >> N;
