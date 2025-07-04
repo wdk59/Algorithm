@@ -1,69 +1,61 @@
-// Union-Find
-// https://imnotabear.tistory.com/111
-
 #include <iostream>
-#include <algorithm>
-#include <map>
-#include <string>
+#include <unordered_map>
 using namespace std;
-map<string, int> m;
-int parent[200001];
-int friend_num[200001];
 
-int find_parent(int x) {
-	if (parent[x] == x) return x;
-	return parent[x] = find_parent(parent[x]);
+// < name, ID >
+unordered_map<string, int> ID;
+int parent[200001], netCnt[200001];
+
+int findRoot(int x) {
+    // 본인이 Root이면 바로 반환
+    if (parent[x] == x) return x;
+    // 부모의 부모 추적해서 Root 찾기
+    return parent[x] = findRoot(parent[x]);
 }
 
-void uni(int a, int b) {
-	a = find_parent(a);
-	b = find_parent(b);
-	if (a < b) {
-		parent[b] = a;
-		friend_num[a] += friend_num[b];
-	}
-	else if (a > b) {
-		parent[a] = b;
-		friend_num[b] += friend_num[a];
-	}
+// 친구 수 반환 (다른 집합에 있으면 합친 후 반환)
+int unionNet(int a, int b) {
+    a = findRoot(a);
+    b = findRoot(b);
+    // 다른 집합이면 집합 합치기 (Root 같으면 같은 집합)
+    if (a != b) {
+        parent[b] = a;
+        netCnt[a] += netCnt[b];
+    }
+    return netCnt[a];
 }
 
 int main() {
-	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
-	int test, cnt, num;
-	string str1, str2;
-	map<string, int> ::iterator it;
-	cin >> test;
-	for (int t = 0; t < test; t++) {
-		m.clear();
-		cnt = 0;
-		for (int i = 0; i < 200001; i++) {
-			parent[i] = i;
-			friend_num[i] = 1;
-		}
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
 
-		cin >> num;
-		int a, b;
-		for (int i = 0; i < num; i++) {
-			cin >> str1 >> str2;
-			it = m.find(str1);
-			if (it == m.end()) {
-				m[str1] = ++cnt;
-				a = cnt;
-			}
-			else a = it->second;
+    int t = 0, relations = 0, personCnt = 1;
+    cin >> t;
+    
+    string str1 = "", str2 = "";
+    while (t--) {
+        ID.clear();
+        cin >> relations;
+        
+        // 각 노드의 루트 설정
+        for (int i = 1; i <= relations * 2; i++) {
+            parent[i] = i;
+            netCnt[i] = 1;
+        }
 
-			it = m.find(str2);
-			if (it == m.end()) {
-				m[str2] = ++cnt;
-				b = cnt;
-			}
-			else b = it->second;
-			uni(a, b);
-			int root = find_parent(a);
-			cout << friend_num[root] << '\n';
-		}
-	}
+        personCnt = 1;
+        while (relations--) {
+            str1 = "", str2 = "";
+            cin >> str1 >> str2;
+            // 처음 보는 친구 ID 만들어주기
+            if (ID.count(str1) == 0)    ID[str1] = personCnt++;
+            if (ID.count(str2) == 0)    ID[str2] = personCnt++;
 
-	return 0;
+            // 친구 수 알아내기
+            cout << unionNet(ID[str1], ID[str2]) << '\n';
+        }
+    }
+
+    return 0;
 }
