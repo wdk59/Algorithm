@@ -5,10 +5,6 @@
 
 using namespace std;
 
-bool cmp(pair<int,int>& a, pair<int,int>& b){
-    return a.second > b.second;
-}
-
 vector<int> solution(string s) {
     vector<int> answer;
     int num = 0;
@@ -30,7 +26,9 @@ vector<int> solution(string s) {
         }
     }
     vector<pair<int, int>> v(m.begin(), m.end());
-    sort(v.begin(), v.end(),cmp);
+    sort(v.begin(), v.end(), [](pair<int,int>& a, pair<int,int>& b) {
+        return a.second > b.second;
+    });
    
     for(int i =0; i < v.size(); i++)
         answer.push_back(v[i].first);
