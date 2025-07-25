@@ -23,7 +23,7 @@ void dfs(int& n, int depth, int& answer, vector<int>& row) {
 
 int solution(int n) {
     int answer = 0;
-    vector<int> row(n, false);    // 한 행에 하나만 배치 (인덱스: 배치된 행 번호, 값: 배치된 열 번호)
+    vector<int> row(n, 0);    // 한 행에 하나만 배치 (인덱스: 배치된 행 번호, 값: 배치된 열 번호)
     
     dfs(n, 0, answer, row);
     
