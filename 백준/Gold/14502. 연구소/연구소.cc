@@ -5,8 +5,6 @@
 
 using namespace std;
 
-#define MAX 10
-
 vector<vector<int>> map;
 vector<vector<int>> tmpM;
 vector<vector<bool>> visited;
