@@ -10,6 +10,7 @@ vector<pair<int, int>> cctv;
 int answer = 2147483647;
 
 // 우상좌하: CCTV 1번이 오른쪽이라서 우상좌하 순서로 설정
+// 여기 놓쳤다가 마지막 테스트 케이스에서 걸림
 int dx[4] = { 0, -1, 0, 1 };
 int dy[4] = { 1, 0, -1, 0 };
 
@@ -25,6 +26,7 @@ void check(int x, int y, int dir) {
         if (arr[x][y] != 0)
             continue;
 
+        // 봤으면 표시하기
         arr[x][y] = -1;
     }
 }
@@ -35,7 +37,8 @@ void dfs(int num) {
         int cnt = 0;
         for (int i = 0; i < N; i++)
             for (int j = 0; j < M; j++)
-                if (!arr[i][j]) cnt++;
+                if (!arr[i][j])
+                    cnt++;
 
         answer = min(answer, cnt);
         return;
