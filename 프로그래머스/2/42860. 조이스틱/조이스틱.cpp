@@ -28,7 +28,7 @@ int solution(string name) {
         // -> 왼쪽 -> 오른쪽
         int move2 = (name.size() - next) * 2 + i;
         
-        // 오른쪽으로 가는 경우, 왼쪽으로 가는 경우 비교
+        // 가능한 경우 중 최소 구하기
         minMove = min(minMove, min(move1, move2));
     }
     
