@@ -10,6 +10,7 @@ int solution(int N, int number) {
         tmp *= 10;  tmp += N;
     }
     
+    // N 사용 횟수 8보다 커지면 무시
     for (int i = 2; i < 9; i++) {
         for (int j = 1; j < i; j++) {
             for (int left: dp[j]) {
