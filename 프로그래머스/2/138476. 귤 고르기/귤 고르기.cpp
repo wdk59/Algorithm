@@ -4,28 +4,24 @@
 
 using namespace std;
 
-bool compare(pair<int, int> a, pair<int, int> b) {
-    if (a.second == b.second)
-        return a.first > b.first;
-    return a.second > b.second;
-}
-
 int solution(int k, vector<int> tangerine) {
     int answer = 0;
     
-    unordered_map<int, int> tan_cnt;
+    unordered_map<int, int> tan_map;
     for (int i = 0; i < tangerine.size(); i++)
-        tan_cnt[tangerine[i]]++;
+        tan_map[tangerine[i]]++;
     
-    vector<pair<int, int>> tan_vec(tan_cnt.begin(), tan_cnt.end());
-    sort(tan_vec.begin(), tan_vec.end(), compare);
+    vector<int> tan_cnt;
+    for (int i = 0; i < tan_map.size(); i++)
+        tan_cnt.push_back(tan_map[i]);
+    sort(tan_cnt.rbegin(), tan_cnt.rend());
     
-    for (answer = 0; answer < tan_vec.size(); answer++) {
-        k -= tan_vec[answer].second;
+    for (answer = 0; answer < tan_cnt.size(); answer++) {
+        k -= tan_cnt[answer];
         
         if (k <= 0)
             break;
     }
     
-    return answer + 1;
+    return answer + 1;  // tan_cnt가 0-based기 때문에 1 더해주기
 }
