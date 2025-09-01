@@ -1,5 +1,5 @@
 #include <iostream>
-#include <vector>
+#include <queue>
 using namespace std;
 
 int main() {
@@ -10,23 +10,22 @@ int main() {
 	int N = 0, K = 0;
 	cin >> N >> K;
 
-	int idx = 0, cnt = 0, delNum = 0;
-	vector<bool> deleted(N, false);
-	cout << "<";
-	while (delNum < N) {
-		cnt = 0;
-		while (cnt < K - 1 || deleted[idx]) {
-			if (!deleted[idx])
-				cnt++;
-			idx = (idx < N - 1 ? idx + 1 : 0);
+	queue<int> q;
+	for (int i = 1; i <= N; i++)
+		q.push(i);
+
+	cout << '<';
+	while (!q.empty()) {
+		for (int i = 1; i < K; i++) {
+			q.push(q.front());
+			q.pop();
 		}
-		delNum++;
-		deleted[idx] = true;
-		cout << idx + 1;
-		if (delNum < N)
+		cout << q.front();
+		if (q.size() > 1)
 			cout << ", ";
+		q.pop();
 	}
-	cout << ">";
+	cout << '>';
 
 	return 0;
 }
