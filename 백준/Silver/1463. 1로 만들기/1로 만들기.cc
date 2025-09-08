@@ -2,29 +2,6 @@
 #include <vector>
 using namespace std;
 
-void dp(vector<int>& dp_cnt, int n) {
-	if (n % 3 == 0 && n / 3 >= 1)
-		dp_cnt[n] = min(dp_cnt[n], dp_cnt[n / 3] + 1);
-	if (n % 2 == 0 && n / 2 >= 1)
-		dp_cnt[n] = min(dp_cnt[n], dp_cnt[n / 2] + 1);
-	if (n > 1)
-		dp_cnt[n] = min(dp_cnt[n], dp_cnt[n - 1] + 1);
-
-	if (dp_cnt[n] > 1000000) {
-		int cnt = 0, tmp = n;
-		while (tmp != 1) {
-			if (tmp % 3 == 0)
-				tmp /= 3;
-			else if (tmp % 2 == 0)
-				tmp /= 2;
-			else
-				tmp--;
-			cnt++;
-		}
-		dp_cnt[n] = cnt;
-	}
-}
-
 int main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
@@ -35,13 +12,17 @@ int main() {
 	cin >> N;
 
 	/* 풀이 */
-	vector<int> dp_cnt(N + 1, 1000001);	// 1-based
-	dp_cnt[1] = 0;
-	for (int i = 2; i <= N; i++)
-		dp(dp_cnt, i);
+	vector<int> dp(N + 1, 0);	// 1-based
+	for (int i = 2; i <= N; i++) {
+		dp[i] = dp[i - 1] + 1;
+		if (i % 3 == 0 && dp[i] > dp[i / 3] + 1)
+			dp[i] = dp[i / 3] + 1;
+		if (i % 2 == 0 && dp[i] > dp[i / 2] + 1)
+			dp[i] = dp[i / 2] + 1;
+	}
 
 	/* 출력 */
-	cout << dp_cnt[N];
+	cout << dp[N];
 
 	return 0;
 }
